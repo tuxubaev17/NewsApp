@@ -14,7 +14,6 @@ class DetailNewsController: UIViewController, SFSafariViewControllerDelegate {
     var index: Int = 0
     
     @IBOutlet weak var imageView: UIImageView!
-    
     @IBOutlet weak var authorLabel: UILabel!
     @IBOutlet weak var pubData: UILabel!
     

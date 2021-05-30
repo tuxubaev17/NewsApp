@@ -9,6 +9,7 @@ import UIKit
 
 class TableViewController: UITableViewController {
 
+    private var viewModel = [NewsTableViewCellViewModel]()
     @IBAction func refreshAction(_ sender: Any) {
         newsLoad {
             DispatchQueue.main.async {
@@ -22,6 +23,7 @@ class TableViewController: UITableViewController {
         super.viewDidLoad()
         newsLoad {
             DispatchQueue.main.async {
+                self.viewModel = articles.compactMap(){ NewsTableViewCellViewModel(title: $0.title, imgUrl: URL(string: $0.urlToImage ?? "")) }
                 self.tableView.reloadData()
             }
         }
@@ -34,14 +36,14 @@ class TableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return articles.count
+        return viewModel.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? TableViewCell else{  fatalError() }
         
-        let article = articles[indexPath.row]
-        cell.textLabel?.text = article.title        
+        cell.configure(with: viewModel[indexPath.row])
+        
         return cell
     }
 
@@ -58,5 +60,8 @@ class TableViewController: UITableViewController {
         }
 
     }
-
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 120
+    }
 }
